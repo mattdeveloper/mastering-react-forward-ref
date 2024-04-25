@@ -49,9 +49,11 @@ import { useRef, useEffect } from "react";
 
 const App: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
   return <TextInput ref={inputRef} placeholder="Focus on me" />;
 };
 ```
