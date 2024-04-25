@@ -4,7 +4,7 @@ Accessing DOM elements or invoking methods on child components from their parent
 
 ## Introduction
 
-In React, handling references (refs) and letting parent components interact with child components can be tricky. Fortunately, React's forwardRef feature offers a solid way to manage these interactions. When used with TypeScript, forwardRef not only makes communication between components smoother but also boosts code safety and ease of maintenance. This guide will dive into using forwardRef with TypeScript, showing you practical examples and sharing tips for best practices.
+In React, handling references (refs) and allowing parent components to interact directly with child components can be complex. Fortunately, React's `forwardRef` feature offers a robust solution for these challenges. When used with TypeScript, `forwardRef` not only facilitates smoother component communication but also enhances code safety and maintainability. This guide will explore the use of `forwardRef` with TypeScript, providing practical examples and sharing best practices.
 
 ## Understanding forwardRef
 
@@ -12,11 +12,17 @@ forwardRef in React lets you pass a reference (ref) through a component right to
 
 ## Basic Syntax with TypeScript
 
-```
-import { forwardRef } from 'react';
+Here's a basic example showing how to use `forwardRef` in React with TypeScript:
+
+```typescript
+import { forwardRef } from "react";
 
 const MyComponent = forwardRef((props, ref) => {
-  return <button ref={ref} onClick={props.onClick}>Click Me!</button>;
+  return (
+    <button ref={ref} onClick={props.onClick}>
+      Click Me!
+    </button>
+  );
 });
 ```
 
@@ -26,8 +32,8 @@ Let's demonstrate a simple use case of forwardRef to access a DOM element in a c
 
 ### Child Component with forwardRef
 
-```
-import { forwardRef } from 'react';
+```typescript
+import { forwardRef } from "react";
 
 const TextInput = forwardRef<HTMLInputElement, { placeholder: string }>(
   (props, ref) => {
@@ -38,8 +44,8 @@ const TextInput = forwardRef<HTMLInputElement, { placeholder: string }>(
 
 ### Parent Component Accessing the Child's DOM Node
 
-```
-import { useRef, useEffect } from 'react';
+```typescript
+import { useRef, useEffect } from "react";
 
 const App: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -60,7 +66,7 @@ A more complex scenario involves exposing child component methods to the parent.
 
 In this scenario, we have a button that will expose the onClick method. This method will be triggered from the parent component.
 
-```
+```typescript
 import { forwardRef, useImperativeHandle } from "react";
 
 interface ChildProps {}
@@ -92,7 +98,7 @@ export const ChildComponent = forwardRef<ChildRef, ChildProps>((props, ref) => {
 
 From the parent we will trigger the onClick method from the child. Here we also use ChildRef to type the ref.
 
-```
+```typescript
 import { useRef } from "react";
 
 import { ChildComponent, ChildRef } from "../child";
@@ -130,7 +136,7 @@ When using forwardRef with TypeScript, it's crucial to define proper types for b
 
 Start by defining types for your component's props and the ref. This clarifies what props are expected and what methods or properties the ref will expose.
 
-```
+```typescript
 interface MyComponentProps {
   label: string;
 }
@@ -144,18 +150,20 @@ interface MyComponentRef {
 
 With types defined, implement your component using forwardRef, ensuring that props and the ref adhere to the specified types.
 
-```
-const MyComponent = forwardRef<MyComponentRef, MyComponentProps>((props, ref) => {
-  const internalRef = useRef<HTMLInputElement>(null);
+```typescript
+const MyComponent = forwardRef<MyComponentRef, MyComponentProps>(
+  (props, ref) => {
+    const internalRef = useRef<HTMLInputElement>(null);
 
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      internalRef.current?.focus();
-    },
-  }));
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        internalRef.current?.focus();
+      },
+    }));
 
-  return <input ref={internalRef} aria-label={props.label} />;
-});
+    return <input ref={internalRef} aria-label={props.label} />;
+  }
+);
 ```
 
 ## Source Code
@@ -172,4 +180,4 @@ When leveraging forwardRef in your components, especially with TypeScript, consi
 
 ## Conclusion
 
-forwardRef, particularly when used with TypeScript, offers a powerful way to enhance your React components' flexibility, reusability, and type safety. By understanding its usage patterns and best practices, you can create more maintainable and robust React applications.
+`forwardRef`, particularly when combined with TypeScript, provides a powerful tool to enhance the flexibility, reusability, and type safety of your React components. By understanding its applications and adhering to best practices, you can create more maintainable and robust applications.
